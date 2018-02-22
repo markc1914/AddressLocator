@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 @RestController
-@Component("[addressLocator]")
+@Component
 public class AddressLocatorImpl implements AddressLocator {
 
 	@EndpointInject(uri = Constants.DIRECT_GOOGLE)
