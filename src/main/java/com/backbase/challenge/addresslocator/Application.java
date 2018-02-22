@@ -1,14 +1,12 @@
-package com.backbase.interview.addresslocator;
+package com.backbase.challenge.addresslocator;
 
-import com.backbase.interview.addresslocator.data.Constants;
+import com.backbase.challenge.addresslocator.data.Constants;
 import org.apache.camel.component.servlet.CamelHttpTransportServlet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
-
-import static com.backbase.interview.addresslocator.data.Constants.SERVLET_NAME;
 
 /**
  *  Spring Boot Application Class
@@ -31,7 +29,7 @@ public class Application {
     @Bean
     public ServletRegistrationBean camelServletRegistrationBean() {
         ServletRegistrationBean registration = new ServletRegistrationBean(new CamelHttpTransportServlet(), "/camel/*");
-        registration.setName(SERVLET_NAME);
+        registration.setName(Constants.SERVLET_NAME);
         return registration;
     }
 

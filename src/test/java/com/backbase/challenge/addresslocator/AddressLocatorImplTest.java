@@ -1,6 +1,6 @@
-package com.backbase.interview.addresslocator;
+package com.backbase.challenge.addresslocator;
 
-import com.backbase.interview.addresslocator.services.AddressLocatorImpl;
+import com.backbase.challenge.addresslocator.services.AddressLocatorImpl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

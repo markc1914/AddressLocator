@@ -1,5 +1,6 @@
-package com.backbase.interview.addresslocator.services;
+package com.backbase.challenge.addresslocator.services;
 
+import com.backbase.challenge.addresslocator.data.Constants;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
@@ -16,17 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URLDecoder;
 import java.util.Map;
 
-import static com.backbase.interview.addresslocator.data.Constants.*;
-
 
 @RestController
 @Component("[addressLocator]")
 public class AddressLocatorImpl implements AddressLocator {
 
-	@EndpointInject(uri = DIRECT_GOOGLE)
+	@EndpointInject(uri = Constants.DIRECT_GOOGLE)
 	private ProducerTemplate producer;
 
-	@EndpointInject(uri = DIRECT_XML2JSON)
+	@EndpointInject(uri = Constants.DIRECT_XML2JSON)
 	private ProducerTemplate marshalProducer;
 
 	private static final Logger logger = LoggerFactory.getLogger(AddressLocatorImpl.class.getName());
@@ -36,13 +35,13 @@ public class AddressLocatorImpl implements AddressLocator {
 	 * @param addressString the string representing the address
 	 * @return the Google GeocodeResponse represented as JSON
 	 */
-	@PostMapping(value= ENDPOINT_ADDRESS, produces = MEDIA_TYPE_JSON)
+	@PostMapping(value= Constants.ENDPOINT_ADDRESS, produces = Constants.MEDIA_TYPE_JSON)
 	public String locateAddressAndReturnAsJson(@RequestBody String addressString) {
 
 		logger.info("Welcome to My Web Service");
 		String addressAsStringFromGoogle;
 		try {
-			addressString = URLDecoder.decode(addressString, UTF_8);
+			addressString = URLDecoder.decode(addressString, Constants.UTF_8);
 			addressString = handleWebForm(addressString);
 			CamelContext context = producer.getCamelContext();
 			Exchange exchange = new DefaultExchange(context);
@@ -54,7 +53,7 @@ public class AddressLocatorImpl implements AddressLocator {
 			producer.send(exchange);
 			//transform to JSON - JSON will show in logs
 			marshalProducer.send(exchange);
-			addressAsStringFromGoogle = new String(((byte [])exchange.getProperty(RESULT)), UTF_8);
+			addressAsStringFromGoogle = new String(((byte [])exchange.getProperty(Constants.RESULT)), Constants.UTF_8);
 		} catch (Exception e) {
 			logger.error("Error is {}", e, e.getMessage());
 			//normally we'd write our own for this

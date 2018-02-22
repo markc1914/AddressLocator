@@ -1,4 +1,4 @@
-package com.backbase.interview.addresslocator.data;
+package com.backbase.challenge.addresslocator.data;
 
 /**
  *

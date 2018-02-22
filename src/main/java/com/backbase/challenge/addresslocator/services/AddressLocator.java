@@ -1,4 +1,4 @@
-package com.backbase.interview.addresslocator.services;
+package com.backbase.challenge.addresslocator.services;
 
 public interface AddressLocator {
 
