@@ -1,20 +1,14 @@
 package com.backbase.interview.addresslocator;
 
 import com.backbase.interview.addresslocator.data.Constants;
-import com.backbase.interview.addresslocator.services.AddressLocatorImpl;
-import com.google.code.geocoder.model.GeocodeResponse;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.gson.GsonDataFormat;
 import org.apache.camel.dataformat.xmljson.XmlJsonDataFormat;
 import org.springframework.stereotype.Component;
 
 import static com.backbase.interview.addresslocator.data.Constants.*;
 
 /**
- * © 2016-2017 Gro Solutions, Inc. All Rights Reserved.
- * <p>
- * Description goes here
  *
  * @author markc1914
  * @since 2/21/18
@@ -36,31 +30,27 @@ public class AddressLocatorRouteBuilder extends RouteBuilder {
         xmlJsonFormat.setTrimSpaces(false);
         xmlJsonFormat.setSkipWhitespace(false);
 
-
-
-        GsonDataFormat gsonDataFormat = new GsonDataFormat();
-        gsonDataFormat.setUnmarshalType(GeocodeResponse.class);
-
         from(DIRECT_GOOGLE)
                 .setHeader(Exchange.HTTP_QUERY, simple("address=${header.param1}"))
                 .setHeader(Exchange.HTTP_METHOD, constant("POST"))
                 .to("http://maps.googleapis.com/maps/api/geocode/xml")
                 .convertBodyTo(String.class)
-                .setProperty(RESULT, simple(EXCHANGE_BODY));
+                .setProperty(RESULT, simple(EXCHANGE_BODY))
+                .to("log:com.backbase.interview.addresslocator.XML"); // so you see the xml
 
         from(DIRECT_XML2JSON)
                 .marshal(xmlJsonFormat)
                 .setProperty(RESULT, simple(EXCHANGE_BODY))
                 .convertBodyTo(String.class)
-                .to("log:debug");
+                .to("log:com.backbase.interview.addresslocator.JSON");
 
         restConfiguration().setHost("localhost");
         restConfiguration().port(8888);
 
         //we are doing a post, so we need input and output
-        rest(Constants.ENDPOINT_ADDRESS).produces(MEDIA_TYPE_JSON);
-//                .post().description("The Address Search endpoint")
-//                .to("bean:addresslocator?method=locateAddressAndReturnAsJson");
+        rest(Constants.ENDPOINT_ADDRESS).produces(MEDIA_TYPE_JSON)
+                .post().description("The Address Search endpoint")
+                .to("bean:addresslocator?method=locateAddressAndReturnAsJson");
 
     }
 }

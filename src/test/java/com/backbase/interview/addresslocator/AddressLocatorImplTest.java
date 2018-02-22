@@ -1,14 +1,13 @@
 package com.backbase.interview.addresslocator;
 
+import com.backbase.interview.addresslocator.services.AddressLocatorImpl;
 import org.junit.Test;
 
-import com.backbase.interview.addresslocator.services.AddressLocatorImpl;
-
-import junit.framework.Assert;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+/**
+ * The only thing my code does is manipulate the form data, so this test is simple
+ */
 public class AddressLocatorImplTest {
 	
 	private AddressLocatorImpl addressLocator = new AddressLocatorImpl();
