@@ -1,6 +1,8 @@
 package com.backbase.challenge.addresslocator.services;
 
 import com.backbase.challenge.addresslocator.data.Constants;
+import com.backbase.challenge.addresslocator.exception.AddressLocatorException;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
@@ -34,11 +36,11 @@ public class AddressLocatorImpl implements AddressLocator {
 	 * Here is our Rest Endpoint that handles the address string per the requirements
 	 * @param addressString the string representing the address
 	 * @return the Google GeocodeResponse represented as JSON
+	 * @throws AddressLocatorException 
 	 */
 	@PostMapping(value= Constants.ENDPOINT_ADDRESS, produces = Constants.MEDIA_TYPE_JSON)
-	public String locateAddressAndReturnAsJson(@RequestBody String addressString) {
+	public String locateAddressAndReturnAsJson(@RequestBody String addressString) throws AddressLocatorException {
 
-		logger.info("Welcome to My Web Service");
 		String addressAsStringFromGoogle;
 		try {
 			addressString = URLDecoder.decode(addressString, Constants.UTF_8);
@@ -49,15 +51,11 @@ public class AddressLocatorImpl implements AddressLocator {
 			Map<String, Object> headerMap = new HashMapHeadersMapFactory().newMap();
 			headerMap.put("param1", addressString);
 			exchange.getIn().setHeaders(headerMap);
-			//call google here - XML will show in logs
 			producer.send(exchange);
-			//transform to JSON - JSON will show in logs
-			marshalProducer.send(exchange);
 			addressAsStringFromGoogle = new String(((byte [])exchange.getProperty(Constants.RESULT)), Constants.UTF_8);
 		} catch (Exception e) {
-			logger.error("Error is {}", e, e.getMessage());
-			//normally we'd write our own for this
-			throw new RuntimeException(e);
+			logger.error("Error is {}", e);
+			throw new AddressLocatorException(e);
 		}
 		return addressAsStringFromGoogle;
 	}
