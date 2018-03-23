@@ -15,8 +15,7 @@ import org.springframework.stereotype.Component;
 public class AddressLocatorRouteBuilder extends RouteBuilder {
 
     /**
-     * this is my first time using a Camel router. I'm guessing this controls all the
-     * I/O formatting around requests, responses, etc
+     * Simple Camel Route Builder Implementation
      *
      * @throws Exception
      */
@@ -34,7 +33,7 @@ public class AddressLocatorRouteBuilder extends RouteBuilder {
                 .to("http://maps.googleapis.com/maps/api/geocode/xml")
                 .convertBodyTo(String.class)
                 .setProperty(Constants.RESULT, simple(Constants.EXCHANGE_BODY))
-                .to("log:com.backbase.challenge.addresslocator.XML"); // so you see the xml
+                .to("log:com.backbase.challenge.addresslocator.XML"); 
 
         from(Constants.DIRECT_XML2JSON)
                 .marshal(xmlJsonFormat)
@@ -45,7 +44,6 @@ public class AddressLocatorRouteBuilder extends RouteBuilder {
         restConfiguration().setHost("localhost");
         restConfiguration().port(8888);
 
-        //we are doing a post, so we need input and output
         rest(Constants.ENDPOINT_ADDRESS).produces(Constants.MEDIA_TYPE_JSON)
                 .post().description("The Address Search endpoint")
                 .to("bean:addresslocator?method=locateAddressAndReturnAsJson");
